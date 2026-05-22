@@ -2,11 +2,11 @@
   <div class="theory-page" v-if="muscle && theory">
     <div class="container">
       <!-- Шапка -->
-      <header class="theory-header">
-        <router-link to="/" class="back-link">← Назад к атласу</router-link>
+      <div class="lesson-title-area">
+        <router-link to="/" class="back-link">← Назад</router-link>
         <span class="m-cat-red">{{ muscle.category }}</span>
         <h1 class="m-name">{{ muscle.name }}</h1>
-      </header>
+      </div>
 
       <!-- Блок 1: Фото и список анатомии -->
       <section class="anatomy-section">
@@ -91,8 +91,14 @@ const changeLesson = (dir) => {
 
 <style scoped>
 .theory-page { padding: 80px 5%; background: #fcfaf5; color: #1a1a1a; line-height: 1.6; }
-.container { max-width: 1100px; margin: 0 auto; }
-
+.container { max-width: 1500px; margin: 0 auto; }
+.lesson-title-area{
+  background-color: var(--dark-charcoal);
+  color: white;
+  top: 0;
+  z-index: 1000;
+  padding: 1rem 5%;
+}
 .back-link { display: block; margin-bottom: 20px; color: #888; text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
 .m-cat-red { color: #8b0000; text-transform: uppercase; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
 .m-name { font-family: 'Oswald', sans-serif; font-size: 4.5rem; text-transform: uppercase; margin: 10px 0 40px; line-height: 1; }
