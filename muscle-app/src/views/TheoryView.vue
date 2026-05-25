@@ -110,7 +110,7 @@ const changeLesson = (dir) => {
 
 <style scoped>
 .theory-page { padding: 40px 5% 100px; background: #fcfaf5; color: #1a1a1a; line-height: 1.6; }
-.container { max-width: 1300px; margin: 0 auto; }
+.container { max-width: 1500px; margin: 0 auto; }
 
 /* Шапка - убран черный фон */
 .lesson-title-area{
@@ -140,10 +140,8 @@ h2 { font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: upper
 
 /* ИНСТРУКЦИЯ */
 .instruction-box {
-  background: #fff;
   padding: 20px 30px;
   border-radius: 15px;
-  border-left: 5px solid #8b0000;
   margin-bottom: 30px;
 }
 .instruction-box p { margin: 0; font-weight: 600; color: #555; }
