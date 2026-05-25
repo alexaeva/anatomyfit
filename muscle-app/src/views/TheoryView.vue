@@ -53,8 +53,8 @@
               <p class="ex-description"><strong>Техника выполнения:</strong> {{ ex.technique }}</p>
               
               <!-- Ссылка на подробную страницу упражнения -->
-              <router-link :to="`/exercise/${muscle.name}-${i}`" class="ex-detail-link">
-                Смотреть подробную технику выполнения – {{ ex.title }} →
+              <router-link :to="'/exercise/' + ex.id" class="ex-detail-link">
+                Смотреть подробную технику выполнения →
               </router-link>
             </div>
           </div>
