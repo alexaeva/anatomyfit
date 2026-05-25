@@ -8,10 +8,10 @@ import { RouterView } from 'vue-router'
       <nav>
         <div class="logo">FIT<span>ANATOMY</span></div>
         <ul>
-          <li><a href="#map">Карта</a></li>
-          <li><a href="#lessons">Теория</a></li>
-          <li><a href="#tests">Тесты</a></li>
-          <li><a href="#planner">План</a></li>
+          <li><router-link to="/#map">Карта</router-link></li>
+          <li><router-link to="/#lessons">Библиотека</router-link></li>
+          <li><router-link to="/#tests">Тесты</router-link></li>
+          <li><router-link to="/#planner">План</router-link></li>
         </ul>
       </nav>
     </header>
@@ -21,7 +21,7 @@ import { RouterView } from 'vue-router'
     </main>
 
     <footer>
-      <p>&copy; 2024 — Анатомия тренировок. Образовательный проект.</p>
+      <p>&copy; 2026 — Анатомия тренировок. Образовательный проект.</p>
     </footer>
   </div>
 </template>

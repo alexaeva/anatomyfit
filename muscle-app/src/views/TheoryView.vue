@@ -1,7 +1,8 @@
+
 <template>
   <div class="theory-page" v-if="muscle && theory">
     <div class="container">
-      <!-- Шапка -->
+      <!-- Шапка без лишнего фона -->
       <div class="lesson-title-area">
         <router-link to="/" class="back-link">← Назад</router-link>
         <span class="m-cat-red">{{ muscle.category }}</span>
@@ -33,35 +34,48 @@
 
       <!-- Блок 3: Упражнения и техника -->
       <section class="exercises-section">
-        <h2>Тренировка и техника выполнения</h2>
-        <div class="ex-grid">
-          <div v-for="(ex, i) in theory.training" :key="i" class="ex-card">
-            <div class="ex-header">
-              <span class="target-part">{{ ex.parts }}</span>
-              <h4>{{ ex.title }}</h4>
+        <h2 class="section-title">Программа тренировок</h2>
+        
+        <!-- Лаконичная инструкция без иконки -->
+        <div class="instruction-box" v-if="theory.generalTips">
+          <p>{{ theory.generalTips }}</p>
+        </div>
+
+        <div class="ex-vertical-list">
+          <div v-for="(ex, i) in theory.training" :key="i" class="ex-wide-card">
+            <div class="ex-number">0{{ i + 1 }}</div>
+            <div class="ex-content">
+              <div class="ex-header-row">
+                <h4>{{ ex.title }}</h4>
+                <!-- Метка мышцы всегда справа -->
+                <span class="ex-target-label">{{ ex.parts }}</span>
+              </div>
+              <p class="ex-description"><strong>Техника выполнения:</strong> {{ ex.technique }}</p>
+              
+              <!-- Ссылка на подробную страницу упражнения -->
+              <router-link :to="`/exercise/${muscle.name}-${i}`" class="ex-detail-link">
+                Смотреть подробную технику выполнения – {{ ex.title }} →
+              </router-link>
             </div>
-            <p class="tech-text"><strong>Техника:</strong> {{ ex.technique }}</p>
-            <router-link v-if="ex.link" :to="ex.link" class="internal-link">
-              {{ ex.linkText }}
-            </router-link>
           </div>
         </div>
       </section>
 
-      <!-- Блок 4: Ресурсы и Навигация -->
-      <footer class="theory-footer">
-        <div class="sources">
-          <p>Дополнительные ресурсы:</p>
-          <a v-for="src in theory.sources" :key="src.name" :href="src.url" target="_blank">
+      <!-- Блок 4: Ресурсы -->
+      <section class="resources-block">
+        <h2 class="section-title">Дополнительные ресурсы</h2>
+        <div class="resources-list">
+          <a v-for="src in theory.sources" :key="src.name" :href="src.url" target="_blank" class="resource-item">
             {{ src.name }} ↗
           </a>
         </div>
+      </section>
 
-        <div class="nav-lessons">
-           <button @click="changeLesson('prev')" class="nav-btn">Предыдущий урок</button>
-           <button @click="changeLesson('next')" class="nav-btn">Следующий урок</button>
-        </div>
-      </footer>
+      <!-- Навигация внизу страницы -->
+      <div class="bottom-nav">
+         <button @click="changeLesson('prev')" class="nav-btn">← Предыдущий урок</button>
+         <button @click="changeLesson('next')" class="nav-btn">Следующий урок →</button>
+      </div>
     </div>
   </div>
 </template>
@@ -81,17 +95,24 @@ const theory = computed(() => theoryData[route.params.id])
 const changeLesson = (dir) => {
   const keys = Object.keys(musclesData)
   const index = keys.indexOf(route.params.id)
-  let newIndex = dir === 'next' ? index + 1 : index - 1
+  let newIndex
   
-  if (newIndex >= 0 && newIndex < keys.length) {
-    router.push(`/theory/${keys[newIndex]}`)
+  // Логика бесконечного листания (12 -> 1, 1 -> 12)
+  if (dir === 'next') {
+    newIndex = (index + 1) % keys.length
+  } else {
+    newIndex = (index - 1 + keys.length) % keys.length
   }
+  
+  router.push(`/theory/${keys[newIndex]}`)
 }
 </script>
 
 <style scoped>
-.theory-page { padding: 80px 5%; background: #fcfaf5; color: #1a1a1a; line-height: 1.6; }
-.container { max-width: 1500px; margin: 0 auto; }
+.theory-page { padding: 40px 5% 100px; background: #fcfaf5; color: #1a1a1a; line-height: 1.6; }
+.container { max-width: 1300px; margin: 0 auto; }
+
+/* Шапка - убран черный фон */
 .lesson-title-area{
   background-color: var(--dark-charcoal);
   color: white;
@@ -99,41 +120,107 @@ const changeLesson = (dir) => {
   z-index: 1000;
   padding: 1rem 5%;
 }
-.back-link { display: block; margin-bottom: 20px; color: #888; text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+.back-link { display: block; margin-bottom: 15px; color: #888; text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
 .m-cat-red { color: #8b0000; text-transform: uppercase; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
-.m-name { font-family: 'Oswald', sans-serif; font-size: 4.5rem; text-transform: uppercase; margin: 10px 0 40px; line-height: 1; }
+.m-name { font-family: 'Oswald', sans-serif; font-size: 4.5rem; text-transform: uppercase; margin: 5px 0; line-height: 1; }
 
 /* АНАТОМИЯ */
 .anatomy-grid { display: flex; gap: 50px; margin-bottom: 60px; align-items: flex-start; }
-.atlas-img { width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.atlas-img { width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 .anatomy-img-box { flex: 1.2; }
-.anatomy-list-box { flex: 1; background: white; padding: 30px; border-radius: 30px; }
+.anatomy-list-box { flex: 1; background: white; padding: 30px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
 .anatomy-list-box h3 { margin-top: 0; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
 .anatomy-list-box ul { list-style: none; padding: 0; }
 .anatomy-list-box li { margin-bottom: 12px; display: flex; align-items: center; font-size: 0.95rem; }
 .num-badge { width: 24px; height: 24px; background: #8b0000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; margin-right: 12px; flex-shrink: 0; }
 
-/* СЕКЦИИ ТЕКСТА */
-h2 { font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; margin: 40px 0 20px; border-bottom: 3px solid #8b0000; display: inline-block; }
+/* ТЕКСТЫ */
+h2 { font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; margin: 60px 0 25px; border-bottom: 3px solid #8b0000; display: inline-block; }
 .text-block { font-size: 1.1rem; color: #444; }
 
-/* КАРТОЧКИ УПРАЖНЕНИЙ */
-.ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-.ex-card { background: white; padding: 30px; border-radius: 30px; border-left: 5px solid #8b0000; }
-.target-part { font-size: 0.75rem; font-weight: 800; color: #8b0000; text-transform: uppercase; }
-.ex-card h4 { margin: 8px 0 15px; font-size: 1.4rem; line-height: 1.2; }
-.internal-link { display: inline-block; margin-top: 15px; color: #8b0000; font-weight: bold; text-decoration: none; border-bottom: 1px solid #8b0000; }
+/* ИНСТРУКЦИЯ */
+.instruction-box {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 15px;
+  border-left: 5px solid #8b0000;
+  margin-bottom: 30px;
+}
+.instruction-box p { margin: 0; font-weight: 600; color: #555; }
 
-/* ФУТЕР */
-.theory-footer { margin-top: 80px; padding-top: 40px; border-top: 1px solid #ddd; display: flex; justify-content: space-between; align-items: flex-end; }
-.sources a { display: block; color: #555; text-decoration: none; margin-top: 5px; font-size: 0.9rem; }
-.nav-lessons { display: flex; gap: 20px; }
-.nav-btn { background: #1a1a1a; color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; transition: 0.3s; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
-.nav-btn:hover { background: #8b0000; }
+/* УПРАЖНЕНИЯ */
+.ex-vertical-list { display: flex; flex-direction: column; gap: 20px; }
+.ex-wide-card {
+  display: flex;
+  background: white;
+  padding: 35px;
+  border-radius: 30px;
+  gap: 30px;
+  border: 1px solid #eee;
+  transition: 0.3s;
+}
+.ex-wide-card:hover { border-color: #8b0000; }
+.ex-number { font-family: 'Oswald', sans-serif; font-size: 3rem; color: #eee; line-height: 1; }
+.ex-content { flex: 1; }
+.ex-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.ex-header-row h4 { margin: 0; font-size: 1.6rem; color: #1a1a1a; font-family: 'Inter', sans-serif; }
+
+.ex-target-label {
+  background: #fdf2f2;
+  color: #8b0000;
+  padding: 6px 15px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-left: 20px; /* Отступ слева, чтобы не прилипало к заголовку */
+  white-space: nowrap;
+}
+
+.ex-detail-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #8b0000;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.95rem;
+  border-bottom: 1px solid transparent;
+}
+.ex-detail-link:hover { border-color: #8b0000; }
+
+/* РЕСУРСЫ */
+.resources-block { margin-top: 40px; }
+.resources-list { display: flex; flex-direction: column; gap: 10px; }
+.resource-item { color: #555; text-decoration: none; font-weight: 600; font-size: 1rem; width: fit-content; }
+.resource-item:hover { color: #8b0000; }
+
+/* НИЖНЯЯ НАВИГАЦИЯ */
+.bottom-nav { 
+  margin-top: 80px; 
+  padding-top: 40px; 
+  border-top: 1px solid #ddd; 
+  display: flex; 
+  justify-content: space-between; 
+}
+.nav-btn { 
+  background: #1a1a1a; 
+  color: white; 
+  border: none; 
+  padding: 15px 30px; 
+  border-radius: 50px; 
+  cursor: pointer; 
+  transition: 0.3s; 
+  font-family: 'Oswald', sans-serif; 
+  text-transform: uppercase; 
+  font-size: 0.9rem;
+}
+.nav-btn:hover { background: #8b0000; transform: translateY(-3px); }
 
 @media (max-width: 900px) {
-  .anatomy-grid, .ex-grid { grid-template-columns: 1fr; display: block; }
-  .anatomy-img-box { margin-bottom: 30px; }
+  .anatomy-grid { flex-direction: column; }
+  .ex-wide-card { flex-direction: column; }
+  .ex-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .ex-target-label { margin-left: 0; }
   .m-name { font-size: 3rem; }
 }
 </style>
