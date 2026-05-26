@@ -1,14 +1,25 @@
-
 <template>
   <div class="theory-page" v-if="muscle && theory">
-    <div class="container">
-      <!-- Шапка без лишнего фона -->
-      <div class="lesson-title-area">
+    <!-- Навигация -->
+    <div class="top-nav-bar">
+      <div class="container">
         <router-link to="/" class="back-link">← Назад</router-link>
-        <span class="m-cat-red">{{ muscle.category }}</span>
-        <h1 class="m-name">{{ muscle.name }}</h1>
       </div>
+    </div>
 
+    <!-- Заголовок и категория -->
+    <div class="title-section">
+      <div class="container">
+        <div class="title-row">
+          <h1 class="m-name">{{ muscle.name }}</h1>
+          <span class="m-cat-small">{{ muscle.category }}</span>
+        </div>
+      </div>
+      <!-- Линия на ВСЮ ширину страницы -->
+      <div class="full-width-line"></div>
+    </div>
+
+    <div class="container main-content">
       <!-- Блок 1: Фото и список анатомии -->
       <section class="anatomy-section">
         <div class="anatomy-grid">
@@ -19,7 +30,7 @@
             <h3>Состав мышечной группы:</h3>
             <ul>
               <li v-for="item in theory.anatomyList" :key="item.num">
-                <span class="num-badge">{{ item.num }}</span> {{ item.name }}
+                <span class="num-badge" >{{ item.num }}</span> {{ item.name }}
               </li>
             </ul>
           </div>
@@ -109,26 +120,49 @@ const changeLesson = (dir) => {
 </script>
 
 <style scoped>
-.theory-page { padding: 40px 5% 100px; background: #fcfaf5; color: #1a1a1a; line-height: 1.6; }
-.container { max-width: 1500px; margin: 0 auto; }
+.theory-page { background: #fcfaf5; color: #1a1a1a; padding-bottom: 100px; }
+.container { max-width: 1400px; margin: 0 auto; }
 
-/* Шапка - убран черный фон */
-.lesson-title-area{
-  background-color: var(--dark-charcoal);
-  color: white;
-  top: 0;
-  z-index: 1000;
-  padding: 1rem 5%;
+/* Навигация сверху */
+.top-nav-bar { padding: 5px 0; }
+.back-link { text-decoration: none; color: #888; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
+
+/* Секция заголовка */
+.title-section { margin-top: 10px; }
+.title-row { display: flex; align-items: baseline; gap: 20px; }
+.m-name { 
+  font-family: 'Oswald', sans-serif; 
+  font-size: 6rem; /* Крупный заголовок */
+  text-transform: uppercase; 
+  margin: 0; 
+  line-height: 1; 
 }
-.back-link { display: block; margin-bottom: 15px; color: #888; text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
-.m-cat-red { color: #8b0000; text-transform: uppercase; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
-.m-name { font-family: 'Oswald', sans-serif; font-size: 4.5rem; text-transform: uppercase; margin: 5px 0; line-height: 1; }
+.m-cat-small { 
+  font-family: 'Oswald', sans-serif; 
+  font-size: 1.8rem; 
+  color: #3a3131a5; 
+  text-transform: uppercase; /* Маленькими буквами */
+  font-weight: 400;
+}
 
+/* Линия на всю страницу */
+.full-width-line {
+  background: #8b0000;
+  height: 4px;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 30px;
+  margin-bottom: 60px;
+}
 /* АНАТОМИЯ */
-.anatomy-grid { display: flex; gap: 50px; margin-bottom: 60px; align-items: flex-start; }
-.atlas-img { width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.anatomy-grid { display: flex; gap: 50px; margin-bottom: 10px;  margin-top: 40px; align-items: flex-start; }
+.atlas-img { width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 .anatomy-img-box { flex: 1.2; }
-.anatomy-list-box { flex: 1; background: white; padding: 30px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
+.anatomy-list-box { flex: 1; padding: 30px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
 .anatomy-list-box h3 { margin-top: 0; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
 .anatomy-list-box ul { list-style: none; padding: 0; }
 .anatomy-list-box li { margin-bottom: 12px; display: flex; align-items: center; font-size: 0.95rem; }
