@@ -1,93 +1,101 @@
 <template>
-  <div class="theory-page" v-if="muscle && theory">
-    <!-- Навигация -->
-    <div class="top-nav-bar">
-      <div class="container">
-        <router-link to="/" class="back-link">← Назад</router-link>
-      </div>
-    </div>
-
-    <!-- Заголовок и категория -->
-    <div class="title-section">
-      <div class="container">
-        <div class="title-row">
-          <h1 class="m-name">{{ muscle.name }}</h1>
-          <span class="m-cat-small">{{ muscle.category }}</span>
+  <div class="theory-wrapper" v-if="muscle && theory">
+    
+    <!-- 1. HEADER SECTION (Из 2-го кода: стиль Hero, но БЕЗ прилипания и уже) -->
+    <header class="hero-header">
+      <div class="header-container-narrow">
+        <router-link to="/" class="btn-back"><span>←</span> Назад </router-link>
+        <div class="hero-title-row">
+          <h1 class="hero-name">{{ muscle.name }}</h1>
+          <div class="hero-meta">
+            <span class="label">Категория</span>
+            <span class="value">{{ muscle.category }}</span>
+          </div>
         </div>
       </div>
-      <!-- Линия на ВСЮ ширину страницы -->
-      <div class="full-width-line"></div>
-    </div>
+      <div class="accent-divider"></div>
+    </header>
 
-    <div class="container main-content">
-      <!-- Блок 1: Фото и список анатомии -->
-      <section class="anatomy-section">
+    <!-- 2. DARK ANATOMY SECTION (Полностью из 2-го кода) -->
+    <section class="anatomy-dark-block">
+      <div class="page-container">
         <div class="anatomy-grid">
-          <div class="anatomy-img-box">
-            <img :src="theory.anatomyImage" alt="Анатомия" class="atlas-img">
+          <div class="anatomy-visual">
+            <div class="img-frame">
+              <img :src="theory.anatomyImage" alt="Muscle Map" class="atlas-image" />
+            </div>
           </div>
-          <div class="anatomy-list-box">
-            <h3>Состав мышечной группы:</h3>
-            <ul>
-              <li v-for="item in theory.anatomyList" :key="item.num">
-                <span class="num-badge" >{{ item.num }}</span> {{ item.name }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- Блок 2: Функционирование -->
-      <section class="info-section">
-        <h2>Как работает эта мышца?</h2>
-        <div class="text-block" v-html="theory.mechanics"></div>
-      </section>
-
-      <!-- Блок 3: Упражнения и техника -->
-      <section class="exercises-section">
-        <h2 class="section-title">Программа тренировок</h2>
-        
-        <!-- Лаконичная инструкция без иконки -->
-        <div class="instruction-box" v-if="theory.generalTips">
-          <p>{{ theory.generalTips }}</p>
-        </div>
-
-        <div class="ex-vertical-list">
-          <div v-for="(ex, i) in theory.training" :key="i" class="ex-wide-card">
-            <div class="ex-number">0{{ i + 1 }}</div>
-            <div class="ex-content">
-              <div class="ex-header-row">
-                <h4>{{ ex.title }}</h4>
-                <!-- Метка мышцы всегда справа -->
-                <span class="ex-target-label">{{ ex.parts }}</span>
+          <div class="anatomy-info">
+            <h2 class="side-title">Анатомический атлас</h2>
+            <div class="anatomy-list-columns">
+              <div v-for="item in theory.anatomyList" :key="item.num" class="anatomy-item">
+                <span class="item-num">{{ item.num }}</span>
+                <span class="item-name">{{ item.name }}</span>
               </div>
-              <p class="ex-description"><strong>Техника выполнения:</strong> {{ ex.technique }}</p>
-              
-              <!-- Ссылка на подробную страницу упражнения -->
-              <router-link :to="'/exercise/' + ex.id" class="ex-detail-link">
-                Смотреть подробную технику выполнения →
-              </router-link>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Блок 4: Ресурсы -->
-      <section class="resources-block">
-        <h2 class="section-title">Дополнительные ресурсы</h2>
-        <div class="resources-list">
-          <a v-for="src in theory.sources" :key="src.name" :href="src.url" target="_blank" class="resource-item">
-            {{ src.name }} ↗
-          </a>
+    <!-- НИЖНЯЯ ЧАСТЬ (Полностью из 1-го кода: блоки 3, 4, 5) -->
+    <main class="main-content">
+      
+      <!-- 3. ФУНКЦИОНИРОВАНИЕ (Из 1-го кода) -->
+      <div class="container">
+        <section class="text-section">
+          <h2 class="old-style-h2">Как работает эта мышца?</h2>
+          <div class="mechanics-text" v-html="theory.mechanics"></div>
+        </section>
+      </div>
+
+      <!-- 4. ПРОГРАММА ТРЕНИРОВОК (Из 1-го кода: серый фон, белые карточки) -->
+      <section class="exercises-section-bg">
+        <div class="container">
+          <h2 class="old-style-h2">Программа тренировок</h2>
+          
+          <div class="instruction-simple" v-if="theory.generalTips">
+            <p>{{ theory.generalTips }}</p>
+          </div>
+
+          <div class="ex-grid-2">
+            <router-link 
+              v-for="(ex, i) in theory.training" 
+              :key="i" 
+              :to="'/exercise/' + ex.id"
+              class="ex-white-card"
+            >
+              <div class="ex-card-info">
+                <h4>{{ ex.title }}</h4>
+                <div class="ex-labels-minimal">
+                  <p><strong>Equipment:</strong> {{ ex.equipment }}</p>
+                  <p><strong>Primary Muscles:</strong> {{ ex.parts }}</p>
+                </div>
+              </div>
+              <div class="ex-arrow">→</div>
+            </router-link>
+          </div>
         </div>
       </section>
 
-      <!-- Навигация внизу страницы -->
-      <div class="bottom-nav">
-         <button @click="changeLesson('prev')" class="nav-btn">← Предыдущий урок</button>
-         <button @click="changeLesson('next')" class="nav-btn">Следующий урок →</button>
+      <!-- 5. РЕСУРСЫ И НАВИГАЦИЯ (Из 1-го кода) -->
+      <div class="container">
+        <section class="resources-section">
+          <h2 class="old-style-h2">Дополнительные ресурсы</h2>
+          <div class="res-list-simple">
+            <a v-for="src in theory.sources" :key="src.name" :href="src.url" target="_blank">
+              {{ src.name }} ↗
+            </a>
+          </div>
+        </section>
+
+        <div class="bottom-nav">
+           <button @click="changeLesson('prev')" class="nav-btn-light">← Предыдущий урок</button>
+           <button @click="changeLesson('next')" class="nav-btn-light">Следующий урок →</button>
+        </div>
       </div>
-    </div>
+
+    </main>
   </div>
 </template>
 
@@ -106,153 +114,92 @@ const theory = computed(() => theoryData[route.params.id])
 const changeLesson = (dir) => {
   const keys = Object.keys(musclesData)
   const index = keys.indexOf(route.params.id)
-  let newIndex
-  
-  // Логика бесконечного листания (12 -> 1, 1 -> 12)
-  if (dir === 'next') {
-    newIndex = (index + 1) % keys.length
-  } else {
-    newIndex = (index - 1 + keys.length) % keys.length
-  }
-  
+  let newIndex = dir === 'next' ? (index + 1) % keys.length : (index - 1 + keys.length) % keys.length
   router.push(`/theory/${keys[newIndex]}`)
 }
 </script>
 
 <style scoped>
-.theory-page { background: #fcfaf5; color: #1a1a1a; padding-bottom: 100px; }
-.container { max-width: 1400px; margin: 0 auto; }
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;600;800&display=swap');
 
-/* Навигация сверху */
-.top-nav-bar { padding: 5px 0; }
-.back-link { text-decoration: none; color: #888; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
+/* ОБЩИЕ */
+.theory-wrapper { background: #fcfaf5; font-family: 'Inter', sans-serif; color: #1a1a1a; padding-bottom: 40px; }
+.page-container { max-width: 1300px; margin: 0 auto; padding: 0; }
+.container { max-width: 1300px; margin: 0 auto; padding: 0; }
 
-/* Секция заголовка */
-.title-section { margin-top: 10px; }
-.title-row { display: flex; align-items: baseline; gap: 20px; }
-.m-name { 
-  font-family: 'Oswald', sans-serif; 
-  font-size: 6rem; /* Крупный заголовок */
-  text-transform: uppercase; 
-  margin: 0; 
-  line-height: 1; 
+/* --- 1. HEADER (Из кода 2, но уже и без sticky) --- */
+.hero-header { padding-top: 10px; position: relative; } /* Убрал sticky */
+.header-container-narrow { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+
+.btn-back { text-decoration: none; color: #aaa; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; display: inline-block; margin-bottom: 30px; }
+.btn-back span { color: #8b0000; }
+.btn-back:hover { color: #5f1010; transform: translateX(-10px); }
+
+.hero-title-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+.hero-name { font-family: 'Oswald', sans-serif; font-size: 7rem; line-height: 0.8; text-transform: uppercase; margin: 0; font-weight: 700; }
+.hero-meta { text-align: right; }
+.hero-meta .label { display: block; font-size: 0.7rem; text-transform: uppercase; color: #aaa; font-weight: 800; letter-spacing: 2px; margin-bottom: 5px; }
+.hero-meta .value { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #d7cdcdd7; text-transform: uppercase; }
+
+.accent-divider { height: 6px; background: #8b0000; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
+
+/* --- 2. DARK ANATOMY BLOCK (Из кода 2) --- */
+.anatomy-dark-block { background: #111; padding: 60px 0; margin-bottom: 30px; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
+.anatomy-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center; }
+.img-frame { background: #1a1a1a; padding: 20px; border-radius: 50px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+.atlas-image { width: 100%; border-radius: 40px; display: block; object-fit: contain; max-height: 550px; }
+
+.side-title { font-family: 'Oswald', sans-serif; color: #8b0000; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 40px; }
+.anatomy-list-columns { display: grid; gap: 15px; }
+.anatomy-item { display: flex; align-items: center; gap: 20px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 20px; }
+.item-num { width: 30px; height: 30px; background: #8b0000; color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
+.item-name { color: #eee; font-size: 1.1rem; }
+
+/* --- 3. TEXT & HEADINGS (Из кода 1) --- */
+.old-style-h2 { 
+  font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; 
+  margin: 15px 0 15px; border-bottom: 3px solid #8b0000; display: inline-block; 
 }
-.m-cat-small { 
-  font-family: 'Oswald', sans-serif; 
-  font-size: 1.8rem; 
-  color: #3a3131a5; 
-  text-transform: uppercase; /* Маленькими буквами */
-  font-weight: 400;
+.mechanics-text { font-size: 1.15rem; line-height: 1.7; color: #444; width: 100%; }
+
+/* --- 4. TRAINING SECTION (Из кода 1: серый фон) --- */
+.exercises-section-bg {
+  background: #f0f0f0; 
+  width: 100vw; position: relative;
+  left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+  padding: 30px 0 45px; margin-top: 30px;
 }
+.instruction-simple { margin-bottom: 30px; color: #555; font-weight: 600; }
+.ex-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-/* Линия на всю страницу */
-.full-width-line {
-  background: #8b0000;
-  height: 4px;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  margin-top: 30px;
-  margin-bottom: 60px;
+.ex-white-card {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; padding: 30px 40px; border-radius: 35px;
+  text-decoration: none; transition: 0.3s; border: 1px solid transparent;
 }
-/* АНАТОМИЯ */
-.anatomy-grid { display: flex; gap: 50px; margin-bottom: 10px;  margin-top: 40px; align-items: flex-start; }
-.atlas-img { width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-.anatomy-img-box { flex: 1.2; }
-.anatomy-list-box { flex: 1; padding: 30px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
-.anatomy-list-box h3 { margin-top: 0; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
-.anatomy-list-box ul { list-style: none; padding: 0; }
-.anatomy-list-box li { margin-bottom: 12px; display: flex; align-items: center; font-size: 0.95rem; }
-.num-badge { width: 24px; height: 24px; background: #8b0000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; margin-right: 12px; flex-shrink: 0; }
+.ex-white-card:hover { transform: translateY(-5px); border-color: #8b0000; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.ex-white-card h4 { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0 0 5px 0; color: #1a1a1a; text-transform: uppercase; }
+.ex-labels-minimal p { margin: 2px 0; font-size: 0.85rem; color: #888; }
+.ex-labels-minimal strong { color: #555; }
+.ex-arrow { font-size: 1.5rem; color: #ddd; transition: 0.3s; }
+.ex-white-card:hover .ex-arrow { color: #8b0000; transform: translateX(5px); }
 
-/* ТЕКСТЫ */
-h2 { font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; margin: 60px 0 25px; border-bottom: 3px solid #8b0000; display: inline-block; }
-.text-block { font-size: 1.1rem; color: #444; }
+/* --- 5. RESOURCES & NAV (Из кода 1) --- */
+.res-list-simple { display: flex; flex-direction: column; gap: 10px; }
+.res-list-simple a { color: #666; text-decoration: none; font-weight: 600; font-size: 1.05rem; width: fit-content; border-bottom: 1px solid #ddd; }
+.res-list-simple a:hover { color: #8b0000; border-color: #8b0000; }
 
-/* ИНСТРУКЦИЯ */
-.instruction-box {
-  padding: 20px 30px;
-  border-radius: 15px;
-  margin-bottom: 30px;
+.bottom-nav { margin-top: 0px; padding-top: 40px; border-top: 1px solid #eee; display: flex; justify-content: space-between; }
+.nav-btn-light { 
+  background: white; color: #1a1a1a; border: 1px solid #ddd; padding: 20px 35px; 
+  border-radius: 50px; cursor: pointer; font-family: 'Oswald', sans-serif; 
+  text-transform: uppercase; transition: 0.3s; font-weight: 600;
 }
-.instruction-box p { margin: 0; font-weight: 600; color: #555; }
+.nav-btn-light:hover { border-color: #8b0000; color: #8b0000; transform: translateY(-2px); }
 
-/* УПРАЖНЕНИЯ */
-.ex-vertical-list { display: flex; flex-direction: column; gap: 20px; }
-.ex-wide-card {
-  display: flex;
-  background: white;
-  padding: 35px;
-  border-radius: 30px;
-  gap: 30px;
-  border: 1px solid #eee;
-  transition: 0.3s;
-}
-.ex-wide-card:hover { border-color: #8b0000; }
-.ex-number { font-family: 'Oswald', sans-serif; font-size: 3rem; color: #eee; line-height: 1; }
-.ex-content { flex: 1; }
-.ex-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.ex-header-row h4 { margin: 0; font-size: 1.6rem; color: #1a1a1a; font-family: 'Inter', sans-serif; }
-
-.ex-target-label {
-  background: #fdf2f2;
-  color: #8b0000;
-  padding: 6px 15px;
-  border-radius: 10px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  margin-left: 20px; /* Отступ слева, чтобы не прилипало к заголовку */
-  white-space: nowrap;
-}
-
-.ex-detail-link {
-  display: inline-block;
-  margin-top: 20px;
-  color: #8b0000;
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 0.95rem;
-  border-bottom: 1px solid transparent;
-}
-.ex-detail-link:hover { border-color: #8b0000; }
-
-/* РЕСУРСЫ */
-.resources-block { margin-top: 40px; }
-.resources-list { display: flex; flex-direction: column; gap: 10px; }
-.resource-item { color: #555; text-decoration: none; font-weight: 600; font-size: 1rem; width: fit-content; }
-.resource-item:hover { color: #8b0000; }
-
-/* НИЖНЯЯ НАВИГАЦИЯ */
-.bottom-nav { 
-  margin-top: 80px; 
-  padding-top: 40px; 
-  border-top: 1px solid #ddd; 
-  display: flex; 
-  justify-content: space-between; 
-}
-.nav-btn { 
-  background: #1a1a1a; 
-  color: white; 
-  border: none; 
-  padding: 15px 30px; 
-  border-radius: 50px; 
-  cursor: pointer; 
-  transition: 0.3s; 
-  font-family: 'Oswald', sans-serif; 
-  text-transform: uppercase; 
-  font-size: 0.9rem;
-}
-.nav-btn:hover { background: #8b0000; transform: translateY(-3px); }
-
-@media (max-width: 900px) {
-  .anatomy-grid { flex-direction: column; }
-  .ex-wide-card { flex-direction: column; }
-  .ex-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .ex-target-label { margin-left: 0; }
-  .m-name { font-size: 3rem; }
+@media (max-width: 1024px) {
+  .hero-name { font-size: 4rem; }
+  .anatomy-grid, .ex-grid-2 { grid-template-columns: 1fr; }
+  .hero-title-row { flex-direction: column; align-items: flex-start; gap: 15px; }
 }
 </style>
