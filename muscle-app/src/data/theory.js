@@ -20,7 +20,7 @@ export const theoryData = {
       { id: 'weighted-lateral-neck-flexion', title: 'Боковое сгибание шеи с отягощением', equipment: 'Диск, гантель', parts: 'Мышцы шеи' },
       { id: 'weighted-lying-neck-extension', title: 'Разгибание шеи лежа (с упряжью)', equipment: 'Упряжь, диск', parts: 'Шея (Задняя часть)' },
       { id: 'weighted-lying-neck-flexion', title: 'Сгибание шеи лежа (с упряжью)', equipment: 'Упряжь, диск', parts: 'Шея (Передняя часть)' },
-      { id: 'gittleson-shrug', title: 'Шраги Гиттлсона', equipment: 'Гантели', parts: 'Трапеции, шея' },
+      { id: 'gittleson-shrug', title: 'Шраги', equipment: 'Гантели', parts: 'Трапеции, шея' },
       { id: 'diagonal-neck-stretch', title: 'Диагональная растяжка шеи', equipment: 'Без оборудования', parts: 'Шея (Растяжка)' },
       { id: 'neck-rotation-stretch', title: 'Растяжка шеи поворотами', equipment: 'Без оборудования', parts: 'Шея (Растяжка)' }
     ],

@@ -54,7 +54,7 @@ header {
   color: white;
   position: sticky;
   top: 0;
-  z-index: 1000;
+   z-index: 9999 !important;
   padding: 1rem 5%;
 }
 
