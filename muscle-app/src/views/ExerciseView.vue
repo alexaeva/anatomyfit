@@ -1,191 +1,227 @@
 <template>
-  <div class="exercise-wrapper" v-if="ex">
-    <!-- 1. HEADER (В стиле TheoryView, не липнет) -->
-    <div class="hero-header">
-      <div class="container-custom">
-        <button @click="$router.back()" class="btn-back">← Назад к уроку</button>
-        <div class="title-row">
-          <h1 id="exercise-title" class="m-name">{{ ex.title }}</h1>
-          <div class="meta-tags">
-            <span class="m-cat-small">Оборудование: {{ ex.equipment }}</span>
+  <div class="exercise-view" v-if="ex">
+    
+    <!-- 1. HEADER (Стиль атласа, не липнет, исправлен z-index) -->
+    <header class="header-section">
+      <div class="container-1300">
+        <button @click="$router.back()" class="btn-back"><span>←</span> Назад</button>
+        <div class="title-flex">
+          <h1 id="main-exercise-title" class="main-title">{{ ex.title }}</h1>
+
+          <div class="meta-info text-end">
+            <span class="label">Целевые мышцы</span>
+            <span class="value">{{ ex.targetMuscle }}</span>
           </div>
         </div>
       </div>
-      <div class="header-divider"></div>
-    </div>
+      <div class="red-divider"></div>
+    </header>
 
-    <main class="main-content">
-      <!-- 2. ОБЗОР (GIF + Описание) -->
-      <div class="container-custom">
-        <section class="overview-section">
-          <div class="anatomy-grid">
-            <div class="anatomy-img-box">
-              <img :src="ex.image" alt="Техника выполнения" class="main-gif">
-            </div>
-            <div class="anatomy-list-box gray-card">
-              <h3 class="side-title">Обзор (Overview)</h3>
-              <p class="overview-text">{{ ex.overview }}</p>
-              <div class="specs-mini">
-                 <p><strong>Целевая мышца:</strong> {{ ex.targetMuscle }}</p>
-                 <p><strong>Тип:</strong> Силовое / Изолирующее</p>
-              </div>
+    <!-- 2. OVERVIEW (Светло-серый контрастный блок) -->
+    <section class="overview-block">
+      <div class="container-1300">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6">
+            <div class="img-frame shadow-sm">
+              <img :src="ex.image" alt="Technique" class="main-gif">
             </div>
           </div>
-        </section>
-      </div>
-
-      <!-- 3. ИНСТРУКЦИЯ (Как на FitnessProgrammer, но красивее) -->
-      <div class="container-custom">
-        <section class="steps-section">
-          <h2 class="old-style-h2">Инструкция (How to do)</h2>
-          <div class="steps-grid">
-            <div class="steps-list">
-              <div v-for="(step, i) in ex.instructions" :key="i" class="step-item">
-                <span class="step-num">{{ i + 1 }}</span>
-                <p>{{ step }}</p>
-              </div>
-            </div>
-            <!-- Блок с советами -->
-            <div class="tips-box-new">
-               <h4 class="tips-title">Советы эксперта</h4>
-               <p>{{ ex.tips }}</p>
+          <div class="col-lg-6">
+            <h2 class="sub-title">Обзор упражнения</h2>
+            <p class="description-text">{{ ex.overview }}</p>
+            <div class="mt-4">
+              <!-- Bootstrap Badge (Использование 1) -->
+              <span class="badge bg-dark p-2 px-4 rounded-1 text-uppercase small">
+                Оборудование: {{ ex.equipment }}
+              </span>
             </div>
           </div>
-        </section>
+        </div>
       </div>
+    </section>
 
-      <!-- 4. РАБОТАЮЩИЕ МЫШЦЫ (Контрастный темный блок как в теории) -->
-      <section class="anatomy-dark-section">
-        <div class="container-custom">
-          <h2 class="old-style-h2 text-white border-white">Работающие мышцы</h2>
-          <div class="row align-items-center mt-5">
-            <!-- Лево: Прогресс-бары (Bootstrap) -->
-            <div class="col-lg-6 pr-lg-5">
+    <!-- 3. INSTRUCTIONS (Чистый белый блок) -->
+    <section class="instructions-block py-5">
+      <div class="container-1300">
+        <h2 class="sub-title">Техника выполнения</h2>
+        <div class="row g-5 mt-2">
+          <!-- Лево: Шаги -->
+          <div class="col-lg-7">
+            <div v-for="(step, i) in ex.instructions" :key="i" class="step-row">
+              <div class="step-badge">{{ i + 1 }}</div>
+              <p class="step-content">{{ step }}</p>
+            </div>
+          </div>
+          <!-- Право: Советы (Tips) -->
+          <div class="col-lg-5">
+            <div class="tips-box p-4 border border-warning-subtle bg-white">
+              <h4 class="tips-h4">Советы:</h4>
+              <ul class="list-unstyled m-0">
+                <li v-for="tip in ex.tips" :key="tip" class="tip-li">
+                  {{ tip }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ANALYSIS (Темный блок с графиками) -->
+    <section class="analysis-dark-block">
+      <div class="container-1300">
+        <!-- Bootstrap Row (Использование 2) -->
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6">
+            <h2 class="sub-title text-white border-white">Активные мышцы</h2>
+            <p class="text-secondary mb-5">Основные группы мышц, участвующие в движении:</p>
+            
+            <div class="muscles-data-list">
               <div v-for="muscle in ex.musclesWorked" :key="muscle.name" class="mb-4">
                 <div class="d-flex justify-content-between mb-2">
-                  <span class="fw-bold" :class="muscle.isTarget ? 'text-danger' : 'text-white'">{{ muscle.name }}</span>
-                  <span class="text-secondary">{{ muscle.value }}%</span>
+                  <span :class="muscle.isTarget ? 'text-danger fw-bold' : 'text-white'">{{ muscle.name }}</span>
+                  <span class="text-secondary small">{{ muscle.value }}%</span>
                 </div>
-                <!-- Bootstrap Progress Bar -->
-                <div class="progress bg-secondary-subtle rounded-pill" style="height: 10px;">
-                  <div class="progress-bar transition-all" 
-                       :class="muscle.isTarget ? 'bg-danger' : 'bg-info'" 
+                <!-- Bootstrap Progress (Использование 3) -->
+                <div class="progress rounded-0 bg-dark" style="height: 6px; border: 1px solid #333;">
+                  <div class="progress-bar" 
+                       :class="muscle.isTarget ? 'bg-danger' : 'bg-primary'" 
                        :style="{ width: muscle.value + '%' }"></div>
                 </div>
               </div>
             </div>
-            <!-- Право: Твоя картинка активации -->
-            <div class="col-lg-6 text-center">
-              <div class="map-img-frame">
-                <img :src="ex.targetImage" class="target-map-img" alt="Muscle Activation">
-              </div>
-            </div>
+          </div>
+          <div class="col-lg-6 text-center">
+            <img :src="ex.targetImage" alt="Map" class="map-img shadow">
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- 5. ПРЕИМУЩЕСТВА И ТЕКСТ (JQuery UI Accordion) -->
-      <div class="container-custom">
-        <section class="benefits-section">
-          <h2 class="old-style-h2">Преимущества и анатомия</h2>
-          <div id="benefits-accordion" class="custom-accordion">
-            <template v-for="benefit in ex.benefits" :key="benefit.title">
-              <h3>{{ benefit.title }}</h3>
-              <div><p>{{ benefit.text }}</p></div>
-            </template>
-            
-            <h3>Функциональная роль (Functional Roles)</h3>
-            <div>
-              <p>Трапециевидные мышцы играют решающую роль в движении плеч и шеи, включая подъем, ретракцию и стабилизацию лопаток. Грудино-ключично-сосцевидная и мышца, поднимающая лопатку, способствуют движению шеи.</p>
+    <!-- 5. DEEP DIVE (jQuery UI Accordion) -->
+    <section class="deep-dive-section py-5 mb-5">
+      <div class="container-1300">
+        <h2 class="sub-title">Подробный анализ</h2>
+        
+        <!-- JQuery UI Accordion (Использование 1) -->
+        <div id="exercise-accordion" class="custom-accordion mt-4">
+
+        <h3>Разбро мышц, учавствующих в упражнении</h3>
+          <div class="acc-body">
+            <div v-for="b in ex.functionalMuscles" :key="b.title" class="mb-3">
+              <p class="m-0"><strong>{{ b.name }}</strong> {{ b.text }}</p>
             </div>
           </div>
-        </section>
-      </div>
+          
+          <h3>Какие есть преимушества у этого упражнения?</h3>
+          <div class="acc-body">
+            <div v-for="b in ex.benefits" :key="b.title" class="mb-3">
+              <p class="m-0"><strong>{{ b.name }}</strong> {{ b.text }}</p>
+            </div>
+          </div>
 
-    </main>
+          <h3>Для чего используются эти мышцы?</h3>
+          <div class="acc-body">
+            <div v-for="b in ex.functionalRole" :key="b.title" class="mb-3">
+              <p class="m-0"><strong>{{ b.name }}</strong> {{ b.text }}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
   </div>
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { exercisesData } from '@/data/exercises.js'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, nextTick } from 'vue'
 
 const route = useRoute()
 const ex = computed(() => exercisesData[route.params.id])
 
-onMounted(() => {
-  if (window.$ && $("#benefits-accordion").length) {
-    // 1. JQuery UI Accordion
-    $("#benefits-accordion").accordion({
+onMounted(async () => {
+  await nextTick()
+  if (window.$) {
+    // jQuery UI 1: Accordion
+    $("#exercise-accordion").accordion({
       collapsible: true,
       heightStyle: "content",
-      active: 0,
-      icons: { "header": "ui-icon-plus", "activeHeader": "ui-icon-minus" }
+      active: 0
     });
-    // 2. JQuery UI Effect
-    $("#exercise-title").hide().show("fade", 1000);
+
+    // jQuery UI 2: Effect Highlight для заголовка
+    $("#main-exercise-title").hide().show("drop", { direction: "up" }, 1000);
+
+    // jQuery UI 3: Tooltip (Использование 3)
+    $(document).tooltip();
   }
 })
 </script>
 
 <style scoped>
-/* Подключение шрифтов в App.vue или тут */
-.exercise-wrapper { background: #fcfaf5; color: #1a1a1a; padding-bottom: 100px; font-family: 'Inter', sans-serif; }
-.container-custom { max-width: 1300px; margin: 0 auto; padding: 0 5%; }
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600&display=swap');
 
-/* --- HEADER STYLE (Matches Theory) --- */
-.hero-header { padding-top: 30px; }
-.btn-back { background: none; border: none; color: #aaa; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 15px; cursor: pointer; transition: 0.3s; }
-.btn-back:hover { color: #8b0000; transform: translateX(-5px); }
-.title-row { display: flex; align-items: baseline; gap: 25px; }
-.m-name { font-family: 'Oswald', sans-serif; font-size: 4.5rem; text-transform: uppercase; margin: 0; line-height: 0.9; }
-.m-cat-small { font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: #3a3131a5; text-transform: uppercase; }
-.header-divider { background: #8b0000; height: 4px; width: 100%; margin-top: 30px; }
+/* --- GENERAL --- */
+.exercise-view { background: #fcfaf5; color: #1a1a1a; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+.container-1300 { max-width: 1300px; margin: 0 auto; padding: 0 ; }
 
-/* --- OVERVIEW --- */
-.anatomy-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 50px; margin-top: 50px; align-items: center; }
-.main-gif { width: 100%; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
-.gray-card { background: #f0f0f0; padding: 45px; border-radius: 40px; }
-.side-title { font-family: 'Oswald', sans-serif; font-size: 1.8rem; text-transform: uppercase; margin-bottom: 20px; color: #8b0000; }
-.overview-text { font-size: 1.05rem; line-height: 1.7; color: #555; margin-bottom: 25px; }
+/* --- 1. HEADER (Исправлен z-index) --- */
+.header-section { padding-top: 20px; background: #fcfaf5; position: relative; z-index: 5; } /* Низкий z-index, чтобы nav в App.vue был выше */
+.btn-back { background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none; color: #aaa; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; display: inline-block; margin-bottom: 30px; }
+.btn-back span { color: #8b0000; }
+.btn-back:hover { color: #5f1010; transform: translateX(-10px); }
 
-/* --- INSTRUCTIONS --- */
-.old-style-h2 { 
-  font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; 
-  margin: 80px 0 40px; border-bottom: 3px solid #8b0000; display: inline-block; 
-}
-.steps-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 50px; }
-.step-item { display: flex; gap: 20px; margin-bottom: 30px; }
-.step-num { width: 32px; height: 32px; background: #1a1a1a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; flex-shrink: 0; }
-.tips-box-new { background: #fdf2f2; padding: 40px; border-radius: 40px; border: 1px solid #ff00001a; height: fit-content; }
-.tips-title { font-family: 'Oswald', sans-serif; text-transform: uppercase; color: #8b0000; font-size: 1.4rem; }
+.title-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+.main-title { font-family: 'Oswald', sans-serif; font-size: 7rem; line-height: 0.8; text-transform: uppercase; margin: 0; font-weight: 700; color: #1a1a1a; }
+.label { display: block; font-size: 0.7rem; text-transform: uppercase; color: #bbb; font-weight: 700; letter-spacing: 1px; }
+.value { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #a2a0a0; text-transform: uppercase; }
+.red-divider { height: 4px; background: #8b0000; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
 
-/* --- DARK SECTION (MUSCLES WORKED) --- */
-.anatomy-dark-section { 
-  background: #111; padding: 80px 0; width: 100vw; position: relative;
+/* --- 2. OVERVIEW --- */
+.overview-block { 
+  background: #f0f0f0; padding: 60px 0; width: 100vw; position: relative;
   left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
-  margin-top: 100px; 
 }
-.text-white { color: white !important; }
-.border-white { border-color: white !important; }
-.map-img-frame { background: white; padding: 30px; border-radius: 40px; display: inline-block; }
-.target-map-img { max-width: 100%; height: auto; }
+.img-frame { background: #fff; padding: 10px; border-radius: 20px; border: 1px solid #ddd; margin-right: 80px}
+.main-gif { width: 100%; display: block; border-radius: 2px; }
+.sub-title { font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; margin-bottom: 25px; border-bottom: 3px solid #8b0000; display: inline-block; }
+.description-text { font-size: 1.1rem; line-height: 1.7; color: #555; }
 
-/* --- JQUERY UI ACCORDION FIXES --- */
+/* --- 3. INSTRUCTIONS --- */
+.step-row { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+.step-badge { width: 32px; height: 32px; background: #8b0000; color: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+.step-content { margin: 0; font-size: 1.1rem; color: #333; }
+.tips-box { border-left: 10px solid #00908d; background: #fdfdfd; }
+.tips-h4 { font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.3rem; margin-bottom: 15px; }
+.tip-li { font-size: 0.95rem; color: #666; margin-bottom: 10px; line-height: 1.5; }
+
+/* --- 4. DARK ANALYSIS --- */
+.analysis-dark-block { 
+  background: #1c1c1c; padding: 80px 0; margin: 40px 0; width: 100vw; position: relative;
+  left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+}
+.border-white { border-bottom: 3px solid #fff !important; }
+.map-img { background: #fff; padding: 20px; border-radius: 10px; max-height: 350px; width: 80%; object-fit: contain; margin-left:50px }
+
+/* --- 5. ACCORDION (jQuery UI Overrides) --- */
 :deep(.ui-accordion-header) {
-  background: #fff !important; border: 1px solid #eee !important;
-  border-radius: 20px !important; padding: 20px 30px !important;
-  font-family: 'Oswald', sans-serif !important; text-transform: uppercase;
-  font-size: 1.2rem !important; margin-bottom: 10px; cursor: pointer;
+  background: #fff !important; border: 1px solid #eee !important; border-radius: 0 !important;
+  padding: 15px 25px !important; font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase; font-size: 1.15rem !important; margin-top: 10px; cursor: pointer; outline: none;
 }
-:deep(.ui-accordion-content) {
-  border: none !important; background: transparent !important; padding: 10px 30px 30px !important;
-  color: #666; font-size: 1rem; line-height: 1.6;
-}
+:deep(.ui-accordion-header-active) { color: #8b0000 !important; border-left: 4px solid #8b0000 !important; }
+:deep(.ui-accordion-content) { border: 1px solid #eee !important; border-top: none !important; padding: 25px !important; font-size: 1rem; color: #666; line-height: 1.6; }
 
 @media (max-width: 1024px) {
-  .anatomy-grid, .steps-grid, .row { grid-template-columns: 1fr; flex-direction: column; }
-  .m-name { font-size: 3rem; }
+  .main-title { font-size: 4rem; }
+  .title-flex { flex-direction: column; align-items: flex-start; gap: 15px; }
+  .row { flex-direction: column; }
 }
 </style>

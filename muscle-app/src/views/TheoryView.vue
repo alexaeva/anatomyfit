@@ -68,8 +68,8 @@
               <div class="ex-card-info">
                 <h4>{{ ex.title }}</h4>
                 <div class="ex-labels-minimal">
-                  <p><strong>Equipment:</strong> {{ ex.equipment }}</p>
-                  <p><strong>Primary Muscles:</strong> {{ ex.parts }}</p>
+                  <p><strong>Оборудование:</strong> {{ ex.equipment }}</p>
+                  <p><strong>Целевые мышцы:</strong> {{ ex.parts }}</p>
                 </div>
               </div>
               <div class="ex-arrow">→</div>
