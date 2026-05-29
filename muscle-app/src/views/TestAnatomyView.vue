@@ -71,9 +71,23 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
-import { anatomyQuestions as questions } from '@/data/tests.js'
+import { anatomyQuestions } from '@/data/tests.js'
 
 const router = useRouter()
+
+// --- ЛОГИКА ПЕРЕМЕШИВАНИЯ ---
+const shuffleArray = (array) => {
+  const newArr = [...array]
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr
+}
+
+// Инициализируем вопросы перемешанным списком
+const questions = ref(shuffleArray(anatomyQuestions))
+
 const currentStep = ref(0)
 const score = ref(0)
 const isAnswered = ref(false)
@@ -82,11 +96,10 @@ const userInput = ref('')
 const selectedOpt = ref(null)
 const isInputCorrect = ref(false)
 
-const currentQuestion = computed(() => questions[currentStep.value])
+const currentQuestion = computed(() => questions.value[currentStep.value])
 
-// Текст результата (Из первого кода)
 const resultText = computed(() => {
-  const percent = (score.value / questions.length) * 100
+  const percent = (score.value / questions.value.length) * 100
   if (percent === 100) return 'Идеальное знание анатомии!'
   if (percent >= 50) return 'Хороший результат, но есть что повторить.'
   return 'Рекомендуем еще раз изучить атлас.'
@@ -118,10 +131,12 @@ const handleInput = () => {
 }
 
 const nextQuestion = () => {
-  if (currentStep.value < questions.length - 1) {
+  if (currentStep.value < questions.value.length - 1) {
     currentStep.value++; isAnswered.value = false; userInput.value = ''; selectedOpt.value = null;
-  } else {isFinished.value = true;
-   window.scrollTo({ top: 0, behavior: 'smooth' });}
+  } else {
+    isFinished.value = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 const confirmExit = () => { router.push('/') }
@@ -135,7 +150,14 @@ onBeforeRouteLeave((to, from, next) => {
   }
 })
 
-const resetTest = () => { currentStep.value = 0; score.value = 0; isFinished.value = false; isAnswered.value = false; }
+const resetTest = () => { 
+  // Перемешиваем заново при сбросе
+  questions.value = shuffleArray(anatomyQuestions)
+  currentStep.value = 0; 
+  score.value = 0; 
+  isFinished.value = false; 
+  isAnswered.value = false; 
+}
 </script>
 
 <style scoped>

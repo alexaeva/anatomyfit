@@ -6,7 +6,9 @@ import { RouterView } from 'vue-router'
   <div class="app-wrapper">
     <header>
       <nav>
-        <div class="logo">FIT<span>ANATOMY</span></div>
+      <router-link to="/" class="logo" @click="scrollToTop">
+          FIT<span>ANATOMY</span>
+        </router-link>
         <ul>
           <li><router-link to="/#map">Карта</router-link></li>
           <li><router-link to="/#lessons">Библиотека</router-link></li>
@@ -70,6 +72,9 @@ nav {
   font-family: 'Oswald', sans-serif;
   font-size: 1.5rem;
   letter-spacing: 2px;
+  text-decoration: none;
+  color: white !important; /* ТЕПЕРЬ "FIT" ВСЕГДА БЕЛЫЙ */
+  transition: 0.3s;
 }
 .logo span { color: var(--muscle-red); }
 

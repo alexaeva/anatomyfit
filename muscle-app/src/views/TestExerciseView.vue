@@ -78,21 +78,37 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
-import { exerciseQuestions as questions } from '@/data/tests.js'
+// 1. Импортируем под оригинальным именем, чтобы не было конфликта
+import { exerciseQuestions } from '@/data/tests.js'
 
 const router = useRouter()
+
+// --- ЛОГИКА ПЕРЕМЕШИВАНИЯ ---
+const shuffleArray = (array) => {
+  const newArr = [...array]
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr
+}
+
+// 2. Создаем реактивную переменную, используя данные именно для УПРАЖНЕНИЙ
+const questions = ref(shuffleArray(exerciseQuestions))
+
 const currentStep = ref(0)
 const score = ref(0)
 const isAnswered = ref(false)
 const isFinished = ref(false)
 const userChoices = ref([])
 
-const currentQuestion = computed(() => questions[currentStep.value])
+// 3. Обращаемся к .value, так как теперь questions — это ref
+const currentQuestion = computed(() => questions.value[currentStep.value])
 
 const resultText = computed(() => {
-  const percent = (score.value / questions.length) * 100
+  const percent = (score.value / questions.value.length) * 100
   if (percent === 100) return 'Идеальное знание упражнений!'
   if (percent >= 50) return 'Хороший результат. Можно закрепить знания еще раз.'
   return 'Рекомендуем повторить теорию по упражнениям.'
@@ -131,18 +147,18 @@ const checkMulti = () => {
 }
 
 const nextQuestion = () => {
-  if (currentStep.value < questions.length - 1) {
-    currentStep.value++; isAnswered.value = false; userChoices.value = [];
+  if (currentStep.value < questions.value.length - 1) {
+    currentStep.value++; 
+    isAnswered.value = false; 
+    userChoices.value = [];
   } else {
     isFinished.value = true;
-     window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
 const confirmExit = () => { router.push('/') }
 
-// Защита от случайного выхода. 
-// Срабатывает только если тест НЕ завершен (isFinished === false)
 onBeforeRouteLeave((to, from, next) => {
   if (isFinished.value) {
     next()
@@ -153,11 +169,16 @@ onBeforeRouteLeave((to, from, next) => {
   }
 })
 
-const resetTest = () => {
-  currentStep.value = 0; score.value = 0; isFinished.value = false; isAnswered.value = false; userChoices.value = [];
+const resetTest = () => { 
+  // 4. Перемешиваем именно УПРАЖНЕНИЯ при сбросе
+  questions.value = shuffleArray(exerciseQuestions)
+  currentStep.value = 0; 
+  score.value = 0; 
+  isFinished.value = false; 
+  isAnswered.value = false; 
+  userChoices.value = [];
 }
 </script>
-
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600&display=swap');
 
