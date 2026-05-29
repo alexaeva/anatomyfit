@@ -38,7 +38,8 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*', 
       redirect: '/'
-    }
+    },
+    { path: '/create-plan', name: 'planner', component: () => import('../views/PlannerView.vue') }
   ]
 })
 
