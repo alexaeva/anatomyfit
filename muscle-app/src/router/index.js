@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import TheoryView from '../views/TheoryView.vue'
+import TestAnatomyView from '../views/TestAnatomyView.vue'
+import TestExerciseView from '../views/TestExerciseView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,8 @@ const router = createRouter({
       name: 'exercise', 
       component: () => import('../views/ExerciseView.vue') 
     },
+    { path: '/test-anatomy', name: 'test-anatomy', component: TestAnatomyView },
+    { path: '/test-exercises', name: 'test-exercises', component: TestExerciseView },
     {
       path: '/:pathMatch(.*)*', 
       redirect: '/'

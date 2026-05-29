@@ -3926,12 +3926,12 @@ const setFilter = (f) => {
       <div class="test-row">
         <div class="test-box">
           <h2>Тест на анатомию</h2>
-          <p>Сможете ли вы правильно назвать мышцу, которую мы подсветим на теле человека?</p>
+          <p>Сможете ли вы правильно назвать все мышцы?</p>
           <router-link to="/test-anatomy" class="test-btn">Пройти тест</router-link>
         </div>
         <div class="test-box secondary">
           <h2>Мышцы и упражнения</h2>
-          <p>Выберите подходящие упражнения для конкретных мышечных групп.</p>
+          <p>Проверьте свои знания упражнений и их целевых мыщц?</p>
           <router-link to="/test-exercises" class="test-btn">Пройти тест</router-link>
         </div>
       </div>

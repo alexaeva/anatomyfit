@@ -122,7 +122,7 @@
 
           <h3>Для чего используются эти мышцы?</h3>
           <div class="acc-body">
-            <div v-for="b in ex.functionalRole" :key="b.title" class="mb-3">
+            <div v-for="b in ex.functionalRoles" :key="b.title" class="mb-3">
               <p class="m-0"><strong>{{ b.name }}</strong> {{ b.text }}</p>
             </div>
           </div>
