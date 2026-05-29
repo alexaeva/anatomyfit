@@ -4,7 +4,7 @@
     <!-- 1. HEADER (Светлый фон, не липнет) -->
     <header class="hero-header">
       <div class="container-1300">
-        <button @click="$router.push('/')" class="btn-back">← Назад к атласу</button>
+        <button @click="$router.push('/')" class="btn-back">← Назад </button>
         <div class="title-row">
           <h1 class="m-name">ЛИЧНЫЙ ПЛАН</h1>
           <span class="m-cat-small">Конструктор тренировок</span>
@@ -254,7 +254,7 @@ const workoutMeta = computed(() => answers.value[2] === 'Сила' ? '3х10' : '
 .container-1300 { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
 
 /* HEADER - Сделал светлым по просьбе */
-.hero-header { padding-top: 15px; position: relative; background: #fcfaf5; }
+.hero-header { padding-top: 15px; position: relative; background: #1a1a1a; }
 .btn-back { background: none; border: none; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; color: #aaa; cursor: pointer; margin-bottom: 20px; }
 .btn-back:hover { color: #8b0000; transform: translateX(-10px); }
 .m-name { font-family: 'Oswald', sans-serif; font-size: 6rem; line-height: 1; text-transform: uppercase; margin: 0; color: #1a1a1a; }
