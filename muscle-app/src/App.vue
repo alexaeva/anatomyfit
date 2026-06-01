@@ -1,19 +1,42 @@
 <script setup>
+import { ref } from 'vue'
 import { RouterView } from 'vue-router'
+
+// Состояние меню (открыто/закрыто)
+const isMenuOpen = ref(false)
+
+// Функция для закрытия меню при клике на ссылку
+const closeMenu = () => {
+  isMenuOpen.value = false
+}
+
+const scrollToTop = () => {
+  isMenuOpen.value = false
+  window.scrollTo(0, 0);
+}
 </script>
 
 <template>
   <div class="app-wrapper">
     <header>
       <nav>
-      <router-link to="/" class="logo" @click="scrollToTop">
+        <router-link to="/" class="logo" @click="scrollToTop">
           FIT<span>ANATOMY</span>
         </router-link>
-        <ul>
-          <li><router-link to="/#map">Карта</router-link></li>
-          <li><router-link to="/#lessons">Библиотека</router-link></li>
-          <li><router-link to="/#tests">Тесты</router-link></li>
-          <li><router-link to="/#planner">План</router-link></li>
+
+        <!-- Кнопка "Гамбургер" (видна только на мобилках) -->
+        <button class="burger-menu" @click="isMenuOpen = !isMenuOpen" :class="{ 'is-active': isMenuOpen }">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <!-- Список ссылок -->
+        <ul :class="{ 'nav-open': isMenuOpen }">
+          <li><router-link to="/#map" @click="closeMenu">Карта</router-link></li>
+          <li><router-link to="/#lessons" @click="closeMenu">Библиотека</router-link></li>
+          <li><router-link to="/#tests" @click="closeMenu">Тесты</router-link></li>
+          <li><router-link to="/#planner" @click="closeMenu">План</router-link></li>
         </ul>
       </nav>
     </header>
@@ -73,7 +96,7 @@ nav {
   font-size: 1.5rem;
   letter-spacing: 2px;
   text-decoration: none;
-  color: white !important; /* ТЕПЕРЬ "FIT" ВСЕГДА БЕЛЫЙ */
+  color: white !important;
   transition: 0.3s;
 }
 .logo span { color: var(--muscle-red); }
@@ -96,6 +119,28 @@ nav li a {
 
 nav li a:hover { color: white; }
 
+/* КНОПКА ГАМБУРГЕР (по умолчанию скрыта) */
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10001;
+}
+
+.burger-menu span {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
 footer {
   background: var(--dark-charcoal);
   color: white;
@@ -103,12 +148,53 @@ footer {
   padding: 3rem 1rem;
 }
 
-/* ДОБАВЛЕНО ДЛЯ ТЕЛЕФОНА */
+/* --- АДАПТИВ ДЛЯ ТЕЛЕФОНА --- */
 @media (max-width: 768px) {
-  nav { flex-direction: column; gap: 15px; }
-  nav ul { gap: 15px; padding: 0; }
-  header { padding: 1rem 15px; }
-  .logo { font-size: 1.2rem; }
-}
+  .burger-menu {
+    display: flex; /* Показываем кнопку только на мобиле */
+  }
 
+  /* Анимация крестика при открытии */
+  .burger-menu.is-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .burger-menu.is-active span:nth-child(2) { opacity: 0; }
+  .burger-menu.is-active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+  /* Стили выпадающего меню */
+  nav ul {
+    position: absolute;
+    top: 100%; /* Сразу под шапкой */
+    left: 0;
+    width: 100%;
+    background-color: var(--dark-charcoal);
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    max-height: 0; /* Скрыто по умолчанию */
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    border-top: 1px solid #333;
+  }
+
+  /* Класс, который добавляется при нажатии на бургер */
+  nav ul.nav-open {
+    max-height: 300px; /* Достаточно, чтобы влезли все ссылки */
+  }
+
+  nav li {
+    width: 100%;
+    text-align: center;
+  }
+
+  nav li a {
+    display: block;
+    padding: 20px;
+    border-bottom: 1px solid #222;
+    font-size: 1rem;
+    color: white;
+  }
+  
+  nav li a:active {
+    background-color: var(--muscle-red);
+  }
+}
 </style>
