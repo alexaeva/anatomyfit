@@ -219,9 +219,53 @@ onMounted(async () => {
 :deep(.ui-accordion-header-active) { color: #8b0000 !important; border-left: 4px solid #8b0000 !important; }
 :deep(.ui-accordion-content) { border: 1px solid #eee !important; border-top: none !important; padding: 25px !important; font-size: 1rem; color: #666; line-height: 1.6; }
 
-@media (max-width: 1024px) {
-  .main-title { font-size: 4rem; }
-  .title-flex { flex-direction: column; align-items: flex-start; gap: 15px; }
-  .row { flex-direction: column; }
+@media (max-width: 768px) {
+  .container-1300 {
+    padding: 0 20px;
+  }
+  .main-title {
+    font-size: 2.5rem; /* С 7rem до адекватного размера */
+    line-height: 1;
+  }
+  .value {
+    font-size: 1.2rem;
+  }
+  .title-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .meta-info {
+    text-align: left !important;
+  }
+  .overview-block {
+    padding: 40px 0;
+  }
+  .img-frame {
+    margin-right: 0;
+    margin-bottom: 30px;
+    border-radius: 15px;
+  }
+  .sub-title {
+    font-size: 1.5rem;
+  }
+  .step-row {
+    gap: 10px;
+  }
+  .step-content {
+    font-size: 0.95rem;
+  }
+  .analysis-dark-block {
+    padding: 40px 0;
+  }
+  .map-img {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 30px;
+  }
+  :deep(.ui-accordion-header) {
+    font-size: 0.9rem !important;
+    padding: 12px 15px !important;
+  }
 }
 </style>

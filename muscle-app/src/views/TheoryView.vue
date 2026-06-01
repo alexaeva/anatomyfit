@@ -197,9 +197,47 @@ const changeLesson = (dir) => {
 }
 .nav-btn-light:hover { border-color: #8b0000; color: #8b0000; transform: translateY(-2px); }
 
-@media (max-width: 1024px) {
-  .hero-name { font-size: 4rem; }
-  .anatomy-grid, .ex-grid-2 { grid-template-columns: 1fr; }
-  .hero-title-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+@media (max-width: 768px) {
+  .hero-name {
+    font-size: 2.8rem;
+  }
+  .hero-meta .value {
+    font-size: 1.2rem;
+  }
+  .anatomy-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .anatomy-dark-block {
+    padding: 30px 0;
+  }
+  .img-frame {
+    border-radius: 20px;
+    padding: 10px;
+  }
+  .atlas-image {
+    max-height: 300px;
+    border-radius: 15px;
+  }
+  .anatomy-item {
+    gap: 10px;
+    padding: 8px;
+  }
+  .ex-grid-2 {
+    grid-template-columns: 1fr; /* Карточки упражнений в одну колонку */
+  }
+  .ex-white-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .bottom-nav {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .nav-btn-light {
+    width: 100%;
+    padding: 15px;
+    font-size: 0.9rem;
+  }
 }
 </style>

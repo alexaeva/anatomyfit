@@ -4132,11 +4132,90 @@ const setFilter = (f) => {
 .cta-btn:hover { background: var(--muscle-red); transform: translateY(-3px); }
 
 /* АДАПТИВНОСТЬ */
-@media (max-width: 1024px) {
-  .hero-content { flex-direction: column; align-items: center; text-align: center; }
-  .info-area { padding-top: 20px; }
-  .m-name { font-size: 3rem; }
-  .m-desc { margin: 0 auto; }
-  .m-exercises li { justify-content: center; }
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 20px 15px;
+  }
+  .hero-header h1 {
+    font-size: 1.8rem;
+  }
+  .hero-content {
+    gap: 30px;
+    flex-direction: column;
+  }
+  .map-area {
+    flex: 0 0 100%;
+    width: 100%;
+    order: 1; /* Карта сверху */
+  }
+  .info-area {
+    min-width: 100%;
+    padding-top: 20px;
+    order: 2; /* Текст под картой */
+    text-align: center;
+  }
+  .m-name {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+  }
+  .m-desc {
+    font-size: 0.9rem;
+    max-width: 100%;
+  }
+
+  /* Слайдер на мобильных: 1 карточка */
+  .section-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  .section-header h2 {
+    font-size: 2rem;
+  }
+  .filters {
+    display: flex;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+  }
+  .filters button {
+    white-space: nowrap;
+    padding: 8px 15px;
+    font-size: 0.8rem;
+  }
+  .slider-container {
+    padding: 0 10px;
+  }
+  .nav-arrow {
+    display: none; /* Стрелки мешают на мобиле, лучше использовать свайп или просто кнопки */
+  }
+  .lesson-card {
+    flex: 0 0 100%; /* ОДНА карточка на экран */
+  }
+  .slider-track {
+    /* Пересчитываем сдвиг для одной карточки */
+    transform: v-bind("'translateX(calc(-' + currentIndex + ' * 100%))'") !important;
+    gap: 0;
+  }
+  .card-body {
+    padding: 20px;
+  }
+
+  /* Тесты и Планировщик */
+  .test-box {
+    padding: 40px 20px;
+    border-radius: 20px;
+  }
+  .test-box h2 {
+    font-size: 1.5rem;
+  }
+  .planner-card {
+    padding: 40px 20px;
+    border-radius: 25px;
+  }
+  .planner-card h2 {
+    font-size: 1.8rem;
+  }
 }
 </style>

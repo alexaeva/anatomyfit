@@ -296,4 +296,51 @@ const workoutMeta = computed(() => answers.value[2] === 'Сила' ? '3х10' : '
 .btn-skip { background: #8b0000; color: white; border: none; padding: 5px 15px; cursor: pointer; margin-left: 10px; }
 .fade-in { animation: fadeIn 0.5s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) {
+  .m-name {
+    font-size: 2.2rem;
+  }
+  .m-cat-small {
+    font-size: 1.1rem;
+  }
+  .old-style-h2 {
+    font-size: 1.6rem;
+    margin: 30px 0 20px;
+  }
+  .q-title {
+    font-size: 1.3rem;
+  }
+  .recommendation-box {
+    padding: 25px;
+    font-size: 1rem;
+  }
+  .rec-content {
+    font-size: 1.1rem;
+  }
+  .decision-zone .d-flex {
+    flex-direction: column;
+  }
+  .exercises-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Сетка недели превращается в список */
+  .week-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .day-col {
+    min-height: auto;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .rest-label {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .submit-btn-dark, .nav-btn-outline {
+    width: 100%;
+    padding: 15px;
+  }
+}
 </style>

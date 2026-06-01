@@ -205,8 +205,43 @@ const resetTest = () => {
 .nav-btn-light:hover { border-color: #8b0000; color: #8b0000; }
 .nav-btn-dark:hover { background: #8b0000; }
 
-@media (max-width: 1024px) {
-  .main-title { font-size: 4rem; }
-  .title-flex { flex-direction: column; align-items: flex-start; gap: 15px; }
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2rem;
+  }
+  .value {
+    font-size: 1.2rem;
+  }
+  .sub-title {
+    font-size: 1.4rem;
+  }
+  .main-test-area {
+    padding-top: 30px;
+  }
+  .image-canvas-center {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .opt-btn, .opt-btn-clean {
+    padding: 15px;
+    font-size: 0.95rem;
+  }
+  .result-title {
+    font-size: 2.5rem;
+  }
+  .score-circle {
+    font-size: 4rem;
+  }
+  .result-note {
+    font-size: 1.1rem;
+  }
+  .nav-btn-dark, .nav-btn-light {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .d-flex.gap-4 {
+    flex-direction: column;
+    gap: 10px !important;
+  }
 }
 </style>
