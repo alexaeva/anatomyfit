@@ -17,6 +17,10 @@ const activeFilter = ref('Все')
 const currentIndex = ref(0)
 const transitionEnabled = ref(true)
 
+// Добавлено: определение мобильной версии для правильного шага слайдера
+const isMobile = ref(false)
+const checkMobile = () => { isMobile.value = window.innerWidth <= 768 }
+
 const categories = {
   'Все': Object.keys(musclesData),
   'Верх тела': ['neck', 'back', 'delts', 'biceps', 'triceps', 'forearm'],
@@ -28,17 +32,16 @@ const baseList = computed(() => {
   return categories[activeFilter.value].map(key => ({ id: key, ...musclesData[key] }))
 })
 
-// Тройной список для бесшовности
 const infiniteList = computed(() => [...baseList.value, ...baseList.value, ...baseList.value])
 
-// Устанавливаем начальную позицию на середину (на второй набор списка)
 onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
   currentIndex.value = baseList.value.length
 })
 
 const nextSlide = () => {
   currentIndex.value++
-  // Если зашли глубоко в третий набор, прыгаем незаметно во второй
   if (currentIndex.value >= baseList.value.length * 2) {
     setTimeout(() => {
       transitionEnabled.value = false
@@ -50,7 +53,6 @@ const nextSlide = () => {
 
 const prevSlide = () => {
   currentIndex.value--
-  // Если ушли в первый набор, прыгаем незаметно во второй
   if (currentIndex.value < baseList.value.length) {
     setTimeout(() => {
       transitionEnabled.value = false
@@ -62,14 +64,25 @@ const prevSlide = () => {
 
 const setFilter = (f) => {
   activeFilter.value = f
-  currentIndex.value = baseList.value.length // Сброс на середину
+  currentIndex.value = baseList.value.length
+}
+
+// --- ДОБАВЛЕНО: ЛОГИКА СВАЙПА ---
+const touchStartX = ref(0)
+const handleTouchStart = (e) => { touchStartX.value = e.touches[0].clientX }
+const handleTouchEnd = (e) => {
+  const touchEndX = e.changedTouches[0].clientX
+  const diff = touchStartX.value - touchEndX
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) nextSlide()
+    else prevSlide()
+  }
 }
 </script>
 
 
 <template>
   <div class="home-container">
-    
     <!-- БЛОК 1: ИНТЕРАКТИВНАЯ КАРТА (НОВЫЙ ДИЗАЙН) -->
     <section id="map" class="hero-section">
       <div class="hero-header">
@@ -81,7 +94,6 @@ const setFilter = (f) => {
         <div class="map-area">
           <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 1300 1350" preserveAspectRatio="xMidYMid meet" class="muscle-svg">
-              <!-- Фоновый силуэт -->
               <g class="body-background" transform="translate(0.000000,1311.000000) scale(0.100000,-0.100000)" fill="#8532329f" stroke="none">
                 <path d="M3400 12606 l-34 -13 29 -6 c17 -4 41 -9 55 -12 14 -3 10 1 -10 9
                 l-35 14 29 7 c42 11 170 -11 235 -40 63 -29 77 -28 23 2 -83 47 -219 65 -292 39z"/>
@@ -3856,7 +3868,7 @@ const setFilter = (f) => {
                 @mouseleave="resetMuscle"
                 @click="goToLesson('calves')"
               />
-          </svg>
+           </svg>
         </div>
 
         <div class="info-area">
@@ -3881,7 +3893,6 @@ const setFilter = (f) => {
       </div>
     </section>
 
-    <!-- БЛОК 2: БИБЛИОТЕКА (ПРЕДЫДУЩИЙ ДИЗАЙН) -->
     <section id="lessons" class="lessons-section">
       <div class="section-header">
         <h2>Основы теории</h2>
@@ -3892,15 +3903,18 @@ const setFilter = (f) => {
           </button>
         </div>
       </div>
-
+     
+      <!-- БЛОК 2: БИБЛИОТЕКА (ПРЕДЫДУЩИЙ ДИЗАЙН) -->
       <div class="slider-container">
-        <!-- Те самые стрелочки по бокам в пустом пространстве -->
         <button class="nav-arrow left" @click="prevSlide">‹</button>
         
-        <div class="slider-viewport">
+        <!-- Добавлено touchstart/touchend -->
+        <div class="slider-viewport" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
           <div class="slider-track" 
                :style="{ 
-                 transform: `translateX(calc(-${currentIndex} * (50% + 15px)))`,
+                 transform: isMobile 
+                    ? `translateX(calc(-${currentIndex} * 100%))` 
+                    : `translateX(calc(-${currentIndex} * (50% + 15px)))`,
                  transition: transitionEnabled ? 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
                }">
             <div class="lesson-card" v-for="(lesson, idx) in infiniteList" :key="idx">
@@ -3921,7 +3935,7 @@ const setFilter = (f) => {
       </div>
     </section>
 
-    <!-- БЛОК 3: ТЕСТЫ (ПРЕДЫДУЩИЙ ДИЗАЙН) -->
+    <!-- БЛОК 2: БИБЛИОТЕКА (ПРЕДЫДУЩИЙ ДИЗАЙН) -->
     <section id="tests" class="tests-section">
       <div class="test-row">
         <div class="test-box">
@@ -3937,7 +3951,7 @@ const setFilter = (f) => {
       </div>
     </section>
 
-    <!-- БЛОК 4: КОНСТРУКТОР (ПРЕДЫДУЩИЙ ДИЗАЙН) -->
+    <!-- БЛОК 2: БИБЛИОТЕКА (ПРЕДЫДУЩИЙ ДИЗАЙН) -->
     <section id="planner" class="planner-section">
       <div class="planner-card">
         <h2>Личный план тренировок</h2>
@@ -3950,272 +3964,86 @@ const setFilter = (f) => {
 </template>
 
 <style scoped>
-/* ОБЩИЕ СТИЛИ КОНТЕЙНЕРА */
-.home-container {
-  overflow-x: hidden;
-}
-
-/* СТИЛИ БЛОКА 1 (NEW HERO) */
-.hero-section {
-  padding: 40px 5% 80px 5%;
-  min-height: 100vh;
-  background-color: var(--bone-white);
-}
+/* ТВОИ ОРИГИНАЛЬНЫЕ СТИЛИ БЕЗ ИЗМЕНЕНИЙ */
+.home-container { overflow-x: hidden; }
+.hero-section { padding: 40px 5% 80px 5%; min-height: 100vh; background-color: var(--bone-white); }
 .hero-header { text-align: center; margin-bottom: 20px; }
 .hero-header h1 { font-family: 'Oswald', sans-serif; font-size: 2.8rem; text-transform: uppercase; margin: 0; }
 .hero-subtitle { color: #666; font-size: 1.1rem; }
-
-.hero-content {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center; /* Центрируем всю группу на странице */
-  gap: 150px;             /* Увеличил зазор с 80px до 150px (двигаем текст вправо) */
-  max-width: 1600px;      /* Позволяем контенту растягиваться шире */
-  margin: 0 auto;
-}
-.map-area {
-  flex: 0 0 600px;       /* Увеличил ширину области с 500px до 700px */
-  margin-top: 20px;
-}
+.hero-content { display: flex; align-items: flex-start; justify-content: center; gap: 150px; max-width: 1600px; margin: 0 auto; }
+.map-area { flex: 0 0 600px; margin-top: 20px; }
 .muscle-svg { width: 100%; height: auto; overflow: visible; }
-
-.muscle-trigger {
-  fill-opacity: 0;
-  stroke: rgba(255, 255, 255, 0.6); 
-  stroke-width: 3;
-  stroke-opacity: 0;
-  transition: all 0.4s ease;
-  cursor: pointer;
-}
-.muscle-trigger:hover {
-  stroke-opacity: 1;
-  fill: var(--hover-color);
-  fill-opacity: 0.3;
-  filter: drop-shadow(0 0 20px var(--hover-color));
-}
-
-.info-area {
-  flex: 1;
-  padding-top: 180px;    /* Текст будет начинаться примерно на уровне груди */
-  min-width: 400px;
-}
+.muscle-trigger { fill-opacity: 0; stroke: rgba(255, 255, 255, 0.6); stroke-width: 3; stroke-opacity: 0; transition: all 0.4s ease; cursor: pointer; }
+.muscle-trigger:hover { stroke-opacity: 1; fill: var(--hover-color); fill-opacity: 0.3; filter: drop-shadow(0 0 20px var(--hover-color)); }
+.info-area { flex: 1; padding-top: 180px; min-width: 400px; }
 .m-cat { text-transform: uppercase; font-weight: 700; letter-spacing: 2px; font-size: 0.85rem; }
-.m-name {
-  font-family: 'Oswald', sans-serif;
-  font-size: 4.5rem;     /* Было 4rem. Теперь FITANATOMY будет внушительнее */
-  line-height: 0.85;
-  margin: 10px 0 25px 0;
-  text-transform: uppercase;
-}
-.m-desc {
-  font-size: 1.0rem;     /* Немного увеличил шрифт описания */
-  line-height: 1.6;
-  color: #555;
-  max-width: 500px;      /* Ограничил ширину строки для удобства чтения */
-}
+.m-name { font-family: 'Oswald', sans-serif; font-size: 4.5rem; line-height: 0.85; margin: 10px 0 25px 0; text-transform: uppercase; }
+.m-desc { font-size: 1.0rem; line-height: 1.6; color: #555; max-width: 500px; }
 .m-exercises { margin-top: 40px; }
 .ex-label { font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #aaa; margin-bottom: 15px; }
 .m-exercises ul { list-style: none; padding: 0; }
 .m-exercises li { font-size: 1.2rem; font-weight: 500; margin-bottom: 12px; display: flex; align-items: center; }
 .bullet { width: 8px; height: 8px; border-radius: 50%; margin-right: 15px; }
-
-/* АНИМАЦИЯ БЛОКА 1 */
 .slide-fade-enter-active { transition: all 0.4s ease-out; }
 .slide-fade-enter-from { transform: translateX(40px); opacity: 0; }
-
-/* СТИЛИ БЛОКА 2 (LESSONS) */
-.lessons-section { 
-  padding: 80px 5%; 
-  background: #f0f0f0; 
-}
-
-.section-header { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  margin-bottom: 40px; 
-}
-
-.section-header h2 { 
-  font-family: 'Oswald', sans-serif; 
-  font-size: 3.5rem; 
-  text-transform: uppercase; 
-  margin: 0; 
-}
-
-.filters button {
-  background: white; border: 1px solid #ddd; padding: 10px 25px; border-radius: 25px;
-  margin-left: 12px; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;
-}
+.lessons-section { padding: 80px 5%; background: #f0f0f0; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+.section-header h2 { font-family: 'Oswald', sans-serif; font-size: 3.5rem; text-transform: uppercase; margin: 0; }
+.filters button { background: white; border: 1px solid #ddd; padding: 10px 25px; border-radius: 25px; margin-left: 12px; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif; }
 .filters button.active { background: #8b0000; color: white; border-color: #8b0000; }
-
-/* СЛАЙДЕР - СТРЕЛКИ СБОКУ */
-.slider-container {
-  position: relative;
-  padding: 0 60px; /* Пустое пространство для стрелок */
-}
-
-.slider-viewport {
-  overflow: hidden;
-}
-
-.slider-track {
-  display: flex;
-  gap: 30px; /* Зазор как в оригинале */
-}
-
-.lesson-card {
-  /* Всегда ровно 2 карточки на экране */
-  flex: 0 0 calc(50% - 15px); 
-  background: white; border-radius: 30px; overflow: hidden; 
-}
-.lesson-card:hover .muscle-img {
-  transform: scale(1.1);
-}
-.card-image {
-  height: 220px;
-  background: #dbdbdb; /* Оставляем как фон-заглушку */
-  overflow: hidden;    /* Чтобы картинка не вылезала за скругления */
-}
+.slider-container { position: relative; padding: 0 60px; }
+.slider-viewport { overflow: hidden; }
+.slider-track { display: flex; gap: 30px; }
+.lesson-card { flex: 0 0 calc(50% - 15px); background: white; border-radius: 30px; overflow: hidden; }
+.lesson-card:hover .muscle-img { transform: scale(1.1); }
+.card-image { height: 220px; background: #dbdbdb; overflow: hidden; }
 .card-body { padding: 30px; }
 .category { color: #8b0000; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
 .lesson-card h3 { font-family: 'Inter', sans-serif; font-size: 1.6rem; margin: 10px 0; }
-.muscle-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* Картинка заполнит блок, не растягиваясь уродливо */
-  transition: 0.5s;    /* Плавное увеличение при наведении */
-}
+.muscle-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
 .preview-text { color: #666; font-size: 1rem; line-height: 1.5; margin-bottom: 20px; }
 .read-more { color: black; text-decoration: none; font-weight: 800; border-bottom: 2px solid transparent; transition: 0.2s; }
 .read-more:hover { border-color: #8b0000; }
-
-/* Стрелочки */
-.nav-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none; border: none; font-size: 5rem; color: #ccc; cursor: pointer; transition: 0.3s;
-  z-index: 10;
-}
+.nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 5rem; color: #ccc; cursor: pointer; transition: 0.3s; z-index: 10; }
 .nav-arrow.left { left: 0; }
 .nav-arrow.right { right: 0; }
 .nav-arrow:hover { color: #8b0000; }
-
-/* СТИЛИ БЛОКА 3 (TESTS) */
 .tests-section { padding: 100px 5%; background: white; }
 .test-row { display: flex; gap: 30px; flex-wrap: wrap; }
-.test-box {
-  flex: 1; background: var(--muscle-red); color: white; padding: 60px 40px;
-  border-radius: 40px; text-align: center; min-width: 300px;
-}
+.test-box { flex: 1; background: var(--muscle-red); color: white; padding: 60px 40px; border-radius: 40px; text-align: center; min-width: 300px; }
 .test-box.secondary { background: var(--muscle-blue); }
 .test-box h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; text-transform: uppercase; }
-.test-btn {
-  display: inline-block; margin-top: 25px; background: white; color: var(--dark-charcoal);
-  padding: 12px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: 0.3s;
-}
+.test-btn { display: inline-block; margin-top: 25px; background: white; color: var(--dark-charcoal); padding: 12px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: 0.3s; }
 .test-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-/* СТИЛИ БЛОКА 4 (PLANNER) */
 .planner-section { padding: 100px 5%; background: #f9f9f9; }
-.planner-card {
-  background: white; border: 3px solid var(--muscle-red); padding: 80px 40px;
-  border-radius: 50px; text-align: center; max-width: 900px; margin: 0 auto;
-}
+.planner-card { background: white; border: 3px solid var(--muscle-red); padding: 80px 40px; border-radius: 50px; text-align: center; max-width: 900px; margin: 0 auto; }
 .planner-card h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 20px; }
-.cta-btn {
-  display: inline-block; background: var(--dark-charcoal); color: white;
-  padding: 18px 50px; border-radius: 40px; text-decoration: none;
-  font-family: 'Oswald', sans-serif; font-size: 1.3rem; margin-top: 30px; transition: 0.3s;
-}
+.cta-btn { display: inline-block; background: var(--dark-charcoal); color: white; padding: 18px 50px; border-radius: 40px; text-decoration: none; font-family: 'Oswald', sans-serif; font-size: 1.3rem; margin-top: 30px; transition: 0.3s; }
 .cta-btn:hover { background: var(--muscle-red); transform: translateY(-3px); }
 
-/* АДАПТИВНОСТЬ */
+/* АДАПТИВНОСТЬ (ДОБАВЛЕНО) */
+@media (max-width: 1024px) {
+  .hero-content { flex-direction: column; align-items: center; text-align: center; }
+  .info-area { padding-top: 20px; }
+  .m-name { font-size: 3rem; }
+  .m-desc { margin: 0 auto; }
+  .m-exercises li { justify-content: center; }
+}
+
 @media (max-width: 768px) {
-  .hero-section {
-    padding: 20px 15px;
-  }
-  .hero-header h1 {
-    font-size: 1.8rem;
-  }
-  .hero-content {
-    gap: 30px;
-    flex-direction: column;
-  }
-  .map-area {
-    flex: 0 0 100%;
-    width: 100%;
-    order: 1; /* Карта сверху */
-  }
-  .info-area {
-    min-width: 100%;
-    padding-top: 20px;
-    order: 2; /* Текст под картой */
-    text-align: center;
-  }
-  .m-name {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-  }
-  .m-desc {
-    font-size: 0.9rem;
-    max-width: 100%;
-  }
-
-  /* Слайдер на мобильных: 1 карточка */
-  .section-header {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-  .section-header h2 {
-    font-size: 2rem;
-  }
-  .filters {
-    display: flex;
-    overflow-x: auto;
-    width: 100%;
-    padding-bottom: 10px;
-    justify-content: flex-start;
-  }
-  .filters button {
-    white-space: nowrap;
-    padding: 8px 15px;
-    font-size: 0.8rem;
-  }
-  .slider-container {
-    padding: 0 10px;
-  }
-  .nav-arrow {
-    display: none; /* Стрелки мешают на мобиле, лучше использовать свайп или просто кнопки */
-  }
-  .lesson-card {
-    flex: 0 0 100%; /* ОДНА карточка на экран */
-  }
-  .slider-track {
-    /* Пересчитываем сдвиг для одной карточки */
-    transform: v-bind("'translateX(calc(-' + currentIndex + ' * 100%))'") !important;
-    gap: 0;
-  }
-  .card-body {
-    padding: 20px;
-  }
-
-  /* Тесты и Планировщик */
-  .test-box {
-    padding: 40px 20px;
-    border-radius: 20px;
-  }
-  .test-box h2 {
-    font-size: 1.5rem;
-  }
-  .planner-card {
-    padding: 40px 20px;
-    border-radius: 25px;
-  }
-  .planner-card h2 {
-    font-size: 1.8rem;
-  }
+  .hero-section { padding: 20px 15px; }
+  .map-area { flex: 0 0 100%; width: 100%; order: 1; }
+  .info-area { order: 2; padding-top: 20px; min-width: 100%; }
+  .hero-content { gap: 20px; }
+  .m-name { font-size: 2.2rem; }
+  .section-header { flex-direction: column; gap: 20px; }
+  .section-header h2 { font-size: 2rem; }
+  .filters { display: flex; overflow-x: auto; width: 100%; gap: 10px; padding-bottom: 10px; }
+  .filters button { white-space: nowrap; margin: 0; padding: 8px 15px; font-size: 0.8rem; }
+  .slider-container { padding: 0; }
+  .nav-arrow { display: none; }
+  .lesson-card { flex: 0 0 100%; }
+  .slider-track { gap: 0; }
+  .slider-viewport { touch-action: pan-y; }
 }
 </style>

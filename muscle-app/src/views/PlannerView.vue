@@ -224,7 +224,6 @@ const weekSchedule = computed(() => {
     let d = { name, isWorkout: false, type: '', exercises: [] }
     
     if (count === '1-2' || count === '3') {
-       // Пн и Чт (для 1-2) или Пн и Пт (для 3) - Фулбади
        const isFullDay = (count === '1-2' && (name === 'Пн' || name === 'Чт')) || (count === '3' && (name === 'Пн' || name === 'Пт'))
        if (isFullDay) { d.isWorkout = true; d.type = 'FULLBODY'; d.exercises = all; }
        if (count === '3' && name === 'Ср') { d.isWorkout = true; d.type = 'КАРДИО'; d.exercises = ['Разминка + Бег/Ходьба 30 мин']; }
@@ -252,16 +251,12 @@ const workoutMeta = computed(() => answers.value[2] === 'Сила' ? '3х10' : '
 <style scoped>
 .planner-wrapper { background: #fcfaf5; min-height: 100vh; padding-bottom: 80px; font-family: 'Inter', sans-serif; color: #1a1a1a; }
 .container-1300 { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
-
-/* HEADER - Сделал светлым по просьбе */
 .hero-header { padding-top: 15px; position: relative; background: #1a1a1a; }
 .btn-back { background: none; border: none; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; color: #aaa; cursor: pointer; margin-bottom: 20px; }
 .btn-back:hover { color: #8b0000; transform: translateX(-10px); }
 .m-name { font-family: 'Oswald', sans-serif; font-size: 6rem; line-height: 1; text-transform: uppercase; margin: 0; color: #1a1a1a; }
 .m-cat-small { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: #a2a0a0; text-transform: uppercase; }
 .full-width-line { height: 4px; background: #8b0000; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; margin-top: 30px; }
-
-/* ДИЗАЙН ИЗ ПРЕДЫДУЩЕГО КОДА */
 .old-style-h2 { font-family: 'Oswald', sans-serif; font-size: 2.2rem; text-transform: uppercase; margin: 60px 0 30px; border-bottom: 3px solid #8b0000; display: inline-block; }
 .q-title { font-size: 1.8rem; font-weight: 600; margin-bottom: 40px; color: #333; }
 .options-vertical { display: flex; flex-direction: column; gap: 15px; max-width: 600px; }
@@ -296,51 +291,17 @@ const workoutMeta = computed(() => answers.value[2] === 'Сила' ? '3х10' : '
 .btn-skip { background: #8b0000; color: white; border: none; padding: 5px 15px; cursor: pointer; margin-left: 10px; }
 .fade-in { animation: fadeIn 0.5s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ДОБАВЛЕНО ДЛЯ ТЕЛЕФОНА */
 @media (max-width: 768px) {
-  .m-name {
-    font-size: 2.2rem;
-  }
-  .m-cat-small {
-    font-size: 1.1rem;
-  }
-  .old-style-h2 {
-    font-size: 1.6rem;
-    margin: 30px 0 20px;
-  }
-  .q-title {
-    font-size: 1.3rem;
-  }
-  .recommendation-box {
-    padding: 25px;
-    font-size: 1rem;
-  }
-  .rec-content {
-    font-size: 1.1rem;
-  }
-  .decision-zone .d-flex {
-    flex-direction: column;
-  }
-  .exercises-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  /* Сетка недели превращается в список */
-  .week-layout {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .day-col {
-    min-height: auto;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .rest-label {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  .submit-btn-dark, .nav-btn-outline {
-    width: 100%;
-    padding: 15px;
-  }
+  .m-name { font-size: 2.2rem; }
+  .m-cat-small { font-size: 1.1rem; }
+  .week-layout { grid-template-columns: 1fr; gap: 20px; }
+  .day-col { min-height: auto; }
+  .rest-label { margin: 20px 0; }
+  .container-1300 { padding: 0 15px; }
+  .recommendation-box { padding: 25px; border-left-width: 5px; }
+  .rec-content { font-size: 1.1rem; }
+  .exercises-grid { grid-template-columns: 1fr; }
 }
 </style>

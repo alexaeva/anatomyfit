@@ -198,46 +198,85 @@ const changeLesson = (dir) => {
 .nav-btn-light:hover { border-color: #8b0000; color: #8b0000; transform: translateY(-2px); }
 
 @media (max-width: 768px) {
+  /* Добавляем отступы во все основные контейнеры */
+  .header-container-narrow,
+  .page-container,
+  .container {
+    padding: 0 20px !important; /* Теперь по бокам всегда будет 20px свободного места */
+  }
+
   .hero-name {
-    font-size: 2.8rem;
+    font-size: 2.8rem; /* Уменьшаем огромный заголовок */
+    line-height: 1.1;
+    margin-bottom: 15px;
   }
+
+  .hero-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .hero-meta {
+    text-align: left;
+  }
+
   .hero-meta .value {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
+
+  /* Анатомический атлас */
   .anatomy-grid {
     grid-template-columns: 1fr;
     gap: 30px;
   }
+
   .anatomy-dark-block {
-    padding: 30px 0;
+    padding: 40px 0;
   }
+
   .img-frame {
-    border-radius: 20px;
+    border-radius: 25px;
     padding: 10px;
   }
+
   .atlas-image {
     max-height: 300px;
-    border-radius: 15px;
+    border-radius: 20px;
   }
-  .anatomy-item {
-    gap: 10px;
-    padding: 8px;
-  }
+
+  /* Карточки упражнений */
   .ex-grid-2 {
-    grid-template-columns: 1fr; /* Карточки упражнений в одну колонку */
+    grid-template-columns: 1fr; /* В одну колонку */
+    gap: 15px;
   }
+
   .ex-white-card {
     padding: 20px;
     border-radius: 20px;
+    flex-direction: row; /* Оставляем стрелочку сбоку */
   }
+
+  .ex-white-card h4 {
+    font-size: 1.1rem;
+  }
+
+  /* Текст механики мышц */
+  .mechanics-text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Кнопки навигации внизу */
   .bottom-nav {
     flex-direction: column;
     gap: 15px;
   }
+
   .nav-btn-light {
-    width: 100%;
+    width: 100%; /* Кнопки на всю ширину для удобства нажатия */
+    text-align: center;
     padding: 15px;
-    font-size: 0.9rem;
   }
 }
 </style>

@@ -103,26 +103,12 @@ footer {
   padding: 3rem 1rem;
 }
 
+/* ДОБАВЛЕНО ДЛЯ ТЕЛЕФОНА */
 @media (max-width: 768px) {
-  header {
-    padding: 1rem 15px;
-  }
-  nav {
-    flex-direction: column;
-    gap: 15px;
-  }
-  nav ul {
-    gap: 15px;
-    padding: 0;
-    justify-content: center;
-    width: 100%;
-  }
-  nav li a {
-    font-size: 0.75rem;
-  }
-  .logo {
-    font-size: 1.2rem;
-  }
+  nav { flex-direction: column; gap: 15px; }
+  nav ul { gap: 15px; padding: 0; }
+  header { padding: 1rem 15px; }
+  .logo { font-size: 1.2rem; }
 }
 
 </style>
