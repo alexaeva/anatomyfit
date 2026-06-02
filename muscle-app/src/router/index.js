@@ -46,5 +46,7 @@ const router = createRouter({
     { path: '/create-plan', name: 'planner', component: () => import('../views/PlannerView.vue') }
   ]
 })
-
+router.afterEach((to) => {
+  document.title = to.name === 'home' ? 'FITANATOMY — Карта мышц' : `FITANATOMY | ${to.name}`;
+}); 
 export default router

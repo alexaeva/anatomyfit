@@ -179,7 +179,7 @@ onMounted(async () => {
 .btn-back:hover { color: #5f1010; transform: translateX(-10px); }
 
 .title-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
-.main-title { font-family: 'Oswald', sans-serif; font-size: 7rem; line-height: 0.8; text-transform: uppercase; margin: 0; font-weight: 700; color: #1a1a1a; }
+.main-title { font-family: 'Oswald', sans-serif; font-size: 7rem; line-height: 1.0; text-transform: uppercase; margin: 0; font-weight: 700; color: #1a1a1a; word-wrap: break-word; }
 .label { display: block; font-size: 0.7rem; text-transform: uppercase; color: #bbb; font-weight: 700; letter-spacing: 1px; }
 .value { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #a2a0a0; text-transform: uppercase; }
 .red-divider { height: 4px; background: #8b0000; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
