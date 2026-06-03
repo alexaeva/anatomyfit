@@ -46,7 +46,7 @@ const scrollToTop = () => {
     </main>
 
     <footer>
-      <p>&copy; 2026 — Анатомия тренировок. Образовательный проект.</p>
+      <p>&copy; 2026 FitAnatomy</p>
     </footer>
   </div>
 </template>
